@@ -213,7 +213,8 @@ int main() {
     Player* opponent = &player2;
 
     while (!deck.isEmpty() && player1.moralitos > 0 && player2.moralitos > 0) {
-        cout << "\n--- Turn of " << currentPlayer->name << " ---" << endl;
+        int i = 1;
+        cout << endl << "--- Turn number" << i << "Turn of " << currentPlayer->name << " ---" << endl;
         displayPlayers(player1, player2);
 
         Card* card = deck.drawCard();
