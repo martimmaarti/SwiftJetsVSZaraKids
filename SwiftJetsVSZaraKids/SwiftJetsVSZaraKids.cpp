@@ -189,10 +189,12 @@ int main() {
     // Create and shuffle the deck
     Deck deck(40);
 
-    // Add action cards
-    for (int attack = 1, heal = 1; attack <= 5; ++attack, ++heal) {
-        deck.addCard(new ActionCard(attack, heal));
-    }
+       // Add event card *** Cambio realizado: Generación de 25 ActionCards con todas las combinaciones de 1 a 5 ***
+ for (int attack = 1; attack <= 5; ++attack) {
+     for (int heal = 1; heal <= 5; ++heal) {
+         deck.addCard(new ActionCard(attack, heal));
+     }
+ }
 
     // Add event cards
     deck.addCard(new EventCard("Greta Thunberg accuses of greenwashing", -3));
