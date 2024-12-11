@@ -208,54 +208,64 @@ int main() {
 
     deck.shuffle();
 
-    // Game loop
+   // Game loop
     Player* currentPlayer = &player1;
     Player* opponent = &player2;
-
+    
     // Inicializar el contador de turnos fuera del bucle
     int i = 1;
-
+    
     while (!deck.isEmpty() && player1.moralitos > 0 && player2.moralitos > 0) {
         cout << endl << "--- Turn number " << i << " | Turn of " << currentPlayer->name << " ---" << endl;
         displayPlayers(player1, player2);
-
+    
         Card* card = deck.drawCard();
         if (card) {
             card->display();
-
+    
+            // Lanzar el dado y usar el efecto de la carta
             int diceRoll = rollDice();
             bool wildcardUsed = false;
+    
+            // Mostrar información de turno
+            cout << "Dice roll: " << diceRoll << endl;
+    
+            // Aplicar efecto
             card->applyEffect(opponent->moralitos, currentPlayer->arbolitos, diceRoll, wildcardUsed);
-
+    
+            // Mostrar estado actualizado después de aplicar el efecto
+            displayPlayers(player1, player2);
+    
+            // Eliminar la carta después de usarla
             delete card;
         }
-
+    
         // Cambiar de jugador
         swap(currentPlayer, opponent);
-
+    
         // Incrementar el contador de turnos
         i++;
     }
-
-    // Determine winner
+    
+    // Determinar el ganador
     cout << "\n--- Game Over ---" << endl;
     if (player1.moralitos <= 0) {
-        cout << player2.name << " wins by depleting moralitos!" << endl;
-    }
-    else if (player2.moralitos <= 0) {
-        cout << player1.name << " wins by depleting moralitos!" << endl;
-    }
-    else {
+        cout << player2.name << " wins by depleting Taylor Swift's moralitos!" << endl;
+    } else if (player2.moralitos <= 0) {
+        cout << player1.name << " wins by depleting Amancio Ortega's moralitos!" << endl;
+    } else {
+        cout << "Deck exhausted! Deciding winner by arbolitos or remaining moralitos..." << endl;
         if (player1.arbolitos > player2.arbolitos) {
             cout << player1.name << " wins by having more arbolitos!" << endl;
-        }
-        else if (player2.arbolitos > player1.arbolitos) {
+        } else if (player2.arbolitos > player1.arbolitos) {
             cout << player2.name << " wins by having more arbolitos!" << endl;
-        }
-        else {
+        } else if (player1.moralitos > player2.moralitos) {
+            cout << player1.name << " wins by having more moralitos!" << endl;
+        } else if (player2.moralitos > player1.moralitos) {
+            cout << player2.name << " wins by having more moralitos!" << endl;
+        } else {
             cout << "It's a tie!" << endl;
         }
     }
-
     return 0;
 }
