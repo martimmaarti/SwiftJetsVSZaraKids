@@ -1,8 +1,7 @@
 #include <iostream>
 #include <string>
-#include <vector>
-#include <random>
 #include <ctime>
+#include <cstdlib>
 
 using namespace std;
 
@@ -14,62 +13,60 @@ protected:
 
 public:
     Card(const string& name, const string& type)
-        : name(name), type(type) {} //constructor
+        : name(name), type(type) {}
 
     virtual void display() const {
         cout << "Card: " << name << ", Type: " << type << endl;
-    } //muetra en pantalla la carta
+    }
 
     virtual void applyEffect(int& moralitos, int& arbolitos, int& diceRoll, bool& wildcardUsed) const = 0;
 
     virtual ~Card() = default;
 };
 
-// Derived class: Attack/Healing Card
+// Derived class: Action Card
 class ActionCard : public Card {
 private:
     int attackThreshold;
     int healThreshold;
 
 public:
-    ActionCard(int attack, int heal) 
-        : Card("Action", "Attack/Healing"), attackThreshold(attack), healThreshold(heal) {} //constructor
+    ActionCard(int attack, int heal)
+        : Card("Action", "Attack/Healing"), attackThreshold(attack), healThreshold(heal) {}
 
     void display() const override {
         Card::display();
         cout << "Attack Threshold: " << attackThreshold
             << ", Heal Threshold: " << healThreshold << endl;
-    } //muestra en pantalla la carta
+    }
 
     void applyEffect(int& moralitos, int& arbolitos, int& diceRoll, bool& wildcardUsed) const override {
         char choice;
-        do{
+        do {
             cout << "Choose action (A: Attack, H: Heal): ";
             cin >> choice;
             if (choice == 'A' || choice == 'a') {
                 if (diceRoll >= attackThreshold) {
                     moralitos -= attackThreshold;
-                    cout << "Attack failed! Dice roll: " << diceRoll << endl;
                     cout << "Attack successful! -" << attackThreshold << " moralitos to opponent." << endl;
                 }
                 else {
                     cout << "Attack failed! Dice roll: " << diceRoll << endl;
                 }
-            } //si decide atacar
+            }
             else if (choice == 'H' || choice == 'h') {
                 if (diceRoll >= healThreshold) {
                     moralitos += healThreshold;
-                    cout << "Attack failed! Dice roll: " << diceRoll << endl;
                     cout << "Healing successful! +" << healThreshold << " moralitos to self." << endl;
                 }
                 else {
                     cout << "Healing failed! Dice roll: " << diceRoll << endl;
                 }
-            } //si decide atacar
+            }
             else {
                 cout << "Invalid choice, try again." << endl;
             }
-        } while (choice != 'a' || choice != 'A' || choice != 'h' || choice != 'H');
+        } while (choice != 'a' && choice != 'A' && choice != 'h' && choice != 'H');
     }
 };
 
@@ -79,8 +76,8 @@ private:
     int effect;
 
 public:
-    EventCard(const std::string& name, int effect)
-        : Card(name, "Event"), effect(effect) {} //constructor
+    EventCard(const string& name, int effect)
+        : Card(name, "Event"), effect(effect) {}
 
     void display() const override {
         Card::display();
@@ -97,7 +94,7 @@ public:
 class ArbolitoCard : public Card {
 public:
     ArbolitoCard()
-        : Card("Arbolito", "Renewable Energy") {} //constructor
+        : Card("Arbolito", "Renewable Energy") {}
 
     void display() const override {
         Card::display();
@@ -113,37 +110,48 @@ public:
 // Deck class
 class Deck {
 private:
-    vector<Card*> cards;
+    Card** cards;
+    int capacity;
+    int size;
 
-public:
-    void addCard(Card* card) {
-        cards.push_back(card);
+    void shuffleDeck() {
+        for (int i = 0; i < size; ++i) {
+            int j = rand() % size;
+            swap(cards[i], cards[j]);
+        }
     }
 
-    void shuffle() {
-        std::random_device rd;
-        std::mt19937 g(rd());
-        std::shuffle(cards.begin(), cards.end(), g);
+public:
+    Deck(int capacity) : capacity(capacity), size(0) {
+        cards = new Card * [capacity];
+    }
+
+    void addCard(Card* card) {
+        if (size < capacity) {
+            cards[size++] = card;
+        }
     }
 
     Card* drawCard() {
-        if (cards.empty()) return nullptr;
-        Card* card = cards.front();
-        cards.erase(cards.begin());
-        return card;
+        if (size == 0) return nullptr;
+        return cards[--size];
     }
 
     bool isEmpty() const {
-        return cards.empty();
+        return size == 0;
+    }
+
+    void shuffle() {
+        shuffleDeck();
     }
 
     ~Deck() {
-        for (Card* card : cards) {
-            delete card;
+        for (int i = 0; i < size; ++i) {
+            delete cards[i];
         }
+        delete[] cards;
     }
 };
-
 
 // Player class
 class Player {
@@ -165,6 +173,11 @@ int rollDice() {
     return rand() % 6 + 1; // Generates a number between 1 and 6
 }
 
+void displayPlayers(const Player& player1, const Player& player2) {
+    player1.displayStatus();
+    player2.displayStatus();
+}
+
 // Main function
 int main() {
     srand(static_cast<unsigned>(time(0))); // Seed for random number generator
@@ -174,10 +187,10 @@ int main() {
     Player player2("Amancio Ortega");
 
     // Create and shuffle the deck
-    Deck deck;
+    Deck deck(40);
 
     // Add action cards
-    for (int attack = 1, heal = 1; attack <= 5; ++attack, heal++) {
+    for (int attack = 1, heal = 1; attack <= 5; ++attack, ++heal) {
         deck.addCard(new ActionCard(attack, heal));
     }
 
@@ -200,9 +213,8 @@ int main() {
     Player* opponent = &player2;
 
     while (!deck.isEmpty() && player1.moralitos > 0 && player2.moralitos > 0) {
-        cout << "\n--- Turn of " << currentPlayer->name << " ---" << std::endl;
-        currentPlayer->displayStatus();
-        opponent->displayStatus();
+        cout << "\n--- Turn of " << currentPlayer->name << " ---" << endl;
+        displayPlayers(player1, player2);
 
         Card* card = deck.drawCard();
         if (card) {
@@ -226,6 +238,17 @@ int main() {
     }
     else if (player2.moralitos <= 0) {
         cout << player1.name << " wins by depleting moralitos!" << endl;
+    }
+    else {
+        if (player1.arbolitos > player2.arbolitos) {
+            cout << player1.name << " wins by having more arbolitos!" << endl;
+        }
+        else if (player2.arbolitos > player1.arbolitos) {
+            cout << player2.name << " wins by having more arbolitos!" << endl;
+        }
+        else {
+            cout << "It's a tie!" << endl;
+        }
     }
 
     return 0;
