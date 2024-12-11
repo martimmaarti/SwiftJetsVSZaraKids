@@ -212,9 +212,11 @@ int main() {
     Player* currentPlayer = &player1;
     Player* opponent = &player2;
 
+    // Inicializar el contador de turnos fuera del bucle
+    int i = 1;
+
     while (!deck.isEmpty() && player1.moralitos > 0 && player2.moralitos > 0) {
-        int i = 1;
-        cout << endl << "--- Turn number" << i << "Turn of " << currentPlayer->name << " ---" << endl;
+        cout << endl << "--- Turn number " << i << " | Turn of " << currentPlayer->name << " ---" << endl;
         displayPlayers(player1, player2);
 
         Card* card = deck.drawCard();
@@ -228,8 +230,11 @@ int main() {
             delete card;
         }
 
-        // Swap players
+        // Cambiar de jugador
         swap(currentPlayer, opponent);
+
+        // Incrementar el contador de turnos
+        i++;
     }
 
     // Determine winner
