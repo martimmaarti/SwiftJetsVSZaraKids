@@ -48,7 +48,7 @@ public:
             if (choice == 'A' || choice == 'a') {
                 if (diceRoll >= attackThreshold) {
                     moralitos -= attackThreshold;
-                    cout << "Attack successful! -" << attackThreshold << " moralitos to opponent." << endl;
+                    cout << "Attack successful! Dice roll: " << diceRoll << endl << " -" << attackThreshold << " moralitos to opponent." << endl;
                 }
                 else {
                     cout << "Attack failed! Dice roll: " << diceRoll << endl;
@@ -57,7 +57,7 @@ public:
             else if (choice == 'H' || choice == 'h') {
                 if (diceRoll >= healThreshold) {
                     moralitos += healThreshold;
-                    cout << "Healing successful! +" << healThreshold << " moralitos to self." << endl;
+                    cout << "Healing successful! Dice roll: " << diceRoll << endl << " +" << healThreshold << " moralitos to self." << endl;
                 }
                 else {
                     cout << "Healing failed! Dice roll: " << diceRoll << endl;
