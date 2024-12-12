@@ -160,7 +160,7 @@ public:
     int moralitos;
     int arbolitos;
 
-    Player(const string& name, int moralitos = 10)
+    Player(const string& name, int moralitos = 30)
         : name(name), moralitos(moralitos), arbolitos(0) {}
 
     void displayStatus() const {
