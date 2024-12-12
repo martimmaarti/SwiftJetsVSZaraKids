@@ -202,6 +202,11 @@ int main() {
     deck.addCard(new EventCard("Hacienda finds no issues", +1));
     deck.addCard(new EventCard("Beyoncé inspires donation", +3));
     deck.addCard(new EventCard("Jeque árabe gives free gasoline", -5));
+    deck.addCard(new EventCard("Donald Trump invites you to a party, and you make contacts that boost your finances", -4));
+    deck.addCard(new EventCard("You take your private jet, and a jet-tracking Twitter account exposes you", -1));
+    deck.addCard(new EventCard("You fall in love with tea and start sponsoring eco-friendly brands offering the best quality tea", +2));
+    deck.addCard(new EventCard("You meet a kind woman with a small business and decide to help her resist a multinational's monopoly", +5));
+    deck.addCard(new EventCard("You offer scholarships to underprivileged students to enroll at CITM, in exchange for participating in a tree-planting charity event", +4));
 
     // Add arbolito cards
     for (int i = 0; i < 5; ++i) {
