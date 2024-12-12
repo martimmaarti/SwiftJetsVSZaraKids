@@ -218,7 +218,13 @@ int main() {
     int i = 1;
     
     while (!deck.isEmpty() && player1.moralitos > 0 && player2.moralitos > 0) {
-        cout << endl << "--- Turn number " << i << " | Turn of " << currentPlayer->name << " ---" << endl;
+        if (i%2!=0) {
+            cout << endl << "--- Turn number " << i << " | Turn of " << player1.name << " ---" << endl;
+        }
+        else if (i%2==0) {
+            cout << endl << "--- Turn number " << i << " | Turn of " << player2.name << " ---" << endl;
+        }
+        
         displayPlayers(player1, player2);
     
         Card* card = deck.drawCard();
@@ -228,9 +234,6 @@ int main() {
             // Lanzar el dado y usar el efecto de la carta
             int diceRoll = rollDice();
             bool wildcardUsed = false;
-    
-            // Mostrar información de turno
-            cout << "Dice roll: " << diceRoll << endl;
     
             // Aplicar efecto
             card->applyEffect(opponent->moralitos, currentPlayer->arbolitos, diceRoll, wildcardUsed);
@@ -247,6 +250,10 @@ int main() {
     
         // Incrementar el contador de turnos
         i++;
+        
+        char ready;
+        cout << "Are you ready for the next turn? Write anything and press enter to continue" << endl;
+        cin >> ready;
     }
     
     // Determinar el ganador
