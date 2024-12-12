@@ -221,6 +221,8 @@ int main() {
     
     // Inicializar el contador de turnos fuera del bucle
     int i = 1;
+
+    cout << "Welcome to the SwiftJets VS ZaraKids! \nThis turn - based game pits two players against each other in a strategic battle to deplete their \nopponent's 'moralitos' (life points) and claim victory. You start with 30 moralitos (life). The game ends\nwhen one player's moralitos reach zero or all 40 cards are drawn.\nEach turn, players draw one of three card types :\n  Attack / Healing(25 cards): Damage your opponent or restore your own moralitos.\n   Events(10 cards): Trigger random scenarios with varying effects.\n   Arbolitos(5 cards): Rare and versatile, these cards can heal, manipulate outcomes, or even secure victory.\nVictory is decided through the following hierarchy:\n   Moralitos: Deplete your opponent's life points.\n   Arbolitos: If turns end, the player with more arbolitos wins.\n   Remaining Life: As a final tiebreaker, the player with higher moralitos prevails.\nGet ready to strategize, adapt, and outwit your opponent.Let the game begin!" << endl;
     
     while (!deck.isEmpty() && player1.moralitos > 0 && player2.moralitos > 0) {
         if (i%2!=0) {
