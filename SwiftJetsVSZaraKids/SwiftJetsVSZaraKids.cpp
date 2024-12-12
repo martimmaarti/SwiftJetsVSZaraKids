@@ -42,31 +42,71 @@ public:
 
     void applyEffect(int& moralitos, int& arbolitos, int& diceRoll, bool& wildcardUsed) const override {
         char choice;
-        do {
-            cout << "Choose action (A: Attack, H: Heal): ";
-            cin >> choice;
-            if (choice == 'A' || choice == 'a') {
-                if (diceRoll >= attackThreshold) {
-                    moralitos -= attackThreshold;
-                    cout << "Attack successful! Dice roll: " << diceRoll << endl << " -" << attackThreshold << " moralitos to opponent." << endl;
-                }
-                else {
-                    cout << "Attack failed! Dice roll: " << diceRoll << endl;
-                }
-            }
-            else if (choice == 'H' || choice == 'h') {
-                if (diceRoll >= healThreshold) {
-                    moralitos += healThreshold;
-                    cout << "Healing successful! Dice roll: " << diceRoll << endl << " +" << healThreshold << " moralitos to self." << endl;
-                }
-                else {
-                    cout << "Healing failed! Dice roll: " << diceRoll << endl;
-                }
-            }
-            else {
+         do {
+             cout << "Choose action (A: Attack, H: Heal): ";
+             cin >> choice;
+             if (choice == 'A' || choice == 'a') {
+                 if (arbolitos > 0) {
+                     cout << "You have " << arbolitos << " arbolitos. Use one to succeed the attack? (Y/N): ";
+                     cin >> useArbolito;
+                     if (useArbolito == 'Y' || useArbolito == 'y') {
+                         arbolitos--;
+                         moralitos += attackThreshold;
+                         cout << "Healing successful using an arbolito! Remaining arbolitos: " << arbolitos << endl;
+                     }
+                     else if (useArbolito == 'N' || useArbolito == 'n') {
+                         if (diceRoll >= attackThreshold) {
+                             moralitos -= attackThreshold;
+                             cout << "Attack successful! Dice roll: " << diceRoll << endl << " -" << attackThreshold << " moralitos to opponent." << endl;
+                         }
+                         else {
+                             cout << "Attack failed! Dice roll: " << diceRoll << endl;
+                         }
+                     }
+                 }
+                 else {
+                     if (diceRoll >= attackThreshold) {
+                         moralitos -= attackThreshold;
+                         cout << "Attack successful! Dice roll: " << diceRoll << endl << " -" << attackThreshold << " moralitos to opponent." << endl;
+                     }
+                     else {
+                         cout << "Attack failed! Dice roll: " << diceRoll << endl;
+                     }
+                 }
+             }
+             else if (choice == 'H' || choice == 'h') {
+                 if (arbolitos > 0) {
+                     cout << "You have " << arbolitos << " arbolitos. Use one to succeed the healing? (Y/N): ";
+                     cin >> useArbolito;
+                     if (useArbolito == 'Y' || useArbolito == 'y') {
+                         arbolitos--;
+                         moralitos += healThreshold;
+                         cout << "Healing successful using an arbolito! Remaining arbolitos: " << arbolitos << endl;
+                     }
+                     else if (useArbolito == 'N' || useArbolito == 'n') {
+                         if (diceRoll >= healThreshold) {
+                             moralitos -= healThreshold;
+                             cout << "Healing successful! Dice roll: " << diceRoll << endl << " -" << healThreshold << " moralitos to opponent." << endl;
+                         }
+                         else {
+                             cout << "Healing failed! Dice roll: " << diceRoll << endl;
+                         }
+                     }
+                 }
+                 else {
+                     if (diceRoll >= healThreshold) {
+                         moralitos -= healThreshold;
+                         cout << "Healing successful! Dice roll: " << diceRoll << endl << " -" << healThreshold << " moralitos to opponent." << endl;
+                     }
+                     else {
+                         cout << "Healing failed! Dice roll: " << diceRoll << endl;
+                     }
+                 }
+             }
+             else {
                 cout << "Invalid choice, try again." << endl;
-            }
-        } while (choice != 'a' && choice != 'A' && choice != 'h' && choice != 'H');
+             }
+         } while (choice != 'a' && choice != 'A' && choice != 'h' && choice != 'H');
     }
 };
 
