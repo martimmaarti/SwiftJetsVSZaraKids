@@ -42,6 +42,7 @@ public:
 
     void applyEffect(int& moralitos, int& arbolitos, int& diceRoll, bool& wildcardUsed) const override {
         char choice;
+        char useArbolito;
          do {
              cout << "Choose action (A: Attack, H: Heal): ";
              cin >> choice;
