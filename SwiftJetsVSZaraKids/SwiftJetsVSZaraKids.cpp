@@ -19,7 +19,7 @@ public:
         cout << "Card: " << name << ", Type: " << type << endl;
     }
 
-    virtual void applyEffect(int& moralitos, int& arbolitos, int& diceRoll, bool& wildcardUsed) const = 0;
+    virtual void applyEffect(int& currentMoralitos, int& opponentMoralitos, int& arbolitos, int& diceRoll, bool& wildcardUsed) const = 0;
 
     virtual ~Card() = default;
 };
@@ -40,7 +40,7 @@ public:
             << ", Heal Threshold: " << healThreshold << endl;
     }
 
-    void applyEffect(int& moralitos, int& arbolitos, int& diceRoll, bool& wildcardUsed) const override {
+    void applyEffect(int& currentMoralitos, int& opponentMoralitos, int& arbolitos, int& diceRoll, bool& wildcardUsed) const override {
         char choice;
         char useArbolito;
          do {
@@ -52,12 +52,12 @@ public:
                      cin >> useArbolito;
                      if (useArbolito == 'Y' || useArbolito == 'y') {
                          arbolitos--;
-                         moralitos += attackThreshold;
+                         opponentMoralitos += attackThreshold;
                          cout << "Healing successful using an arbolito! Remaining arbolitos: " << arbolitos << endl;
                      }
                      else if (useArbolito == 'N' || useArbolito == 'n') {
                          if (diceRoll >= attackThreshold) {
-                             moralitos -= attackThreshold;
+                             opponentMoralitos -= attackThreshold;
                              cout << "Attack successful! Dice roll: " << diceRoll << endl << " -" << attackThreshold << " moralitos to opponent." << endl;
                          }
                          else {
@@ -67,7 +67,7 @@ public:
                  }
                  else {
                      if (diceRoll >= attackThreshold) {
-                         moralitos -= attackThreshold;
+                         opponentMoralitos -= attackThreshold;
                          cout << "Attack successful! Dice roll: " << diceRoll << endl << " -" << attackThreshold << " moralitos to opponent." << endl;
                      }
                      else {
@@ -81,12 +81,12 @@ public:
                      cin >> useArbolito;
                      if (useArbolito == 'Y' || useArbolito == 'y') {
                          arbolitos--;
-                         moralitos += healThreshold;
+                         currentMoralitos += healThreshold;
                          cout << "Healing successful using an arbolito! Remaining arbolitos: " << arbolitos << endl;
                      }
                      else if (useArbolito == 'N' || useArbolito == 'n') {
                          if (diceRoll >= healThreshold) {
-                             moralitos -= healThreshold;
+                             currentMoralitos -= healThreshold;
                              cout << "Healing successful! Dice roll: " << diceRoll << endl << " -" << healThreshold << " moralitos to opponent." << endl;
                          }
                          else {
@@ -96,7 +96,7 @@ public:
                  }
                  else {
                      if (diceRoll >= healThreshold) {
-                         moralitos -= healThreshold;
+                         currentMoralitos -= healThreshold;
                          cout << "Healing successful! Dice roll: " << diceRoll << endl << " -" << healThreshold << " moralitos to opponent." << endl;
                      }
                      else {
@@ -125,8 +125,8 @@ public:
         cout << "Effect on moralitos: " << effect << endl;
     }
 
-    void applyEffect(int& moralitos, int& arbolitos, int& diceRoll, bool& wildcardUsed) const override {
-        moralitos += effect;
+    void applyEffect(int& currentMoralitos, int& opponentMoralitos, int& arbolitos, int& diceRoll, bool& wildcardUsed) const override {
+        currentMoralitos += effect;
         cout << "Event effect applied! Moralitos change: " << effect << endl;
     }
 };
@@ -142,7 +142,7 @@ public:
         cout << "Effect: +1 arbolito" << endl;
     }
 
-    void applyEffect(int& moralitos, int& arbolitos, int& diceRoll, bool& wildcardUsed) const override {
+    void applyEffect(int& currentMoralitos, int& opponentMoralitos, int& arbolitos, int& diceRoll, bool& wildcardUsed) const override {
         arbolitos++;
         cout << "Arbolito gained! Total arbolitos: " << arbolitos << endl;
     }
@@ -230,19 +230,19 @@ int main() {
     // Create and shuffle the deck
     Deck deck(40);
 
-       // Add event card *** Cambio realizado: Generación de 25 ActionCards con todas las combinaciones de 1 a 5 ***
- for (int attack = 1; attack <= 5; ++attack) {
-     for (int heal = 1; heal <= 5; ++heal) {
-         deck.addCard(new ActionCard(attack, heal));
-     }
- }
+    // Add action cards
+    for (int attack = 1; attack <= 5; ++attack) {
+        for (int heal = 1; heal <= 5; ++heal) {
+            deck.addCard(new ActionCard(attack, heal));
+        }
+    }
 
     // Add event cards
     deck.addCard(new EventCard("Greta Thunberg accuses of greenwashing", -3));
     deck.addCard(new EventCard("Hacienda finds tax evasion", -2));
     deck.addCard(new EventCard("Hacienda finds no issues", +1));
-    deck.addCard(new EventCard("Beyoncé inspires donation", +3));
-    deck.addCard(new EventCard("Jeque árabe gives free gasoline", -5));
+    deck.addCard(new EventCard("Beyonce inspires donation", +3));
+    deck.addCard(new EventCard("Jeque arabe gives free gasoline", -5));
     deck.addCard(new EventCard("Donald Trump invites you to a party, and you make contacts that boost your finances", -4));
     deck.addCard(new EventCard("You take your private jet, and a jet-tracking Twitter account exposes you", -1));
     deck.addCard(new EventCard("You fall in love with tea and start sponsoring eco-friendly brands offering the best quality tea", +2));
@@ -256,60 +256,45 @@ int main() {
 
     deck.shuffle();
 
-   // Game loop
+    // Game loop
     Player* currentPlayer = &player1;
     Player* opponent = &player2;
-    
-    // Inicializar el contador de turnos fuera del bucle
-    int i = 1;
+    int turn = 1;
 
-    cout << "Welcome to the SwiftJets VS ZaraKids! \nThis turn-based game pits two players against each other in a strategic battle to deplete their \nopponent's 'moralitos' (life points) and claim victory. You start with 30 moralitos. The game ends\nwhen one player's moralitos reach zero or all 40 cards are drawn.\nEach turn, players draw one of three card types :\n  Attack / Healing(25 cards): Damage your opponent or restore your own moralitos. In order to apply this effect,n    you must roll the dice and the number has to be higher than the amount of moralitos you heal/attack\n   Events (10 cards): Trigger random scenarios with varying effects that heals or damages you.\n   Arbolitos(5 cards): Rare and versatile, this card can funtion as a secure for the dice roll (before its roll).\nThis card can also help you winning the game.\nVictory is decided through the following hierarchy:\n   Moralitos: Deplete your opponent's life points.\n   Arbolitos: If turns end, the player with more arbolitos wins.\n   Remaining Life: As a final tiebreaker, the player with higher moralitos prevails.\nGet ready to strategize, adapt, and outwit your opponent.Let the game begin!" << endl;
-    
+    cout << "Welcome to the SwiftJets VS ZaraKids! \nThis turn-based game pits two players against each other in a strategic battle to deplete their \nopponent's 'moralitos' (life points) and claim victory. You start with 30 moralitos. The game ends\nwhen one player's moralitos reach zero or all 40 cards are drawn.\nEach turn, players draw one of three card types :\n   Attack / Healing(25 cards): Damage your opponent or restore your own moralitos. In order to apply this effect,\n     you must roll the dice and the number has to be higher than the amount of moralitos you heal/attack\n   Events (10 cards): Trigger random scenarios with varying effects that heals or damages you.\n   Arbolitos(5 cards): Rare and versatile, this card can funtion as a secure for the dice roll (before its roll).\nThis card can also help you winning the game.\nVictory is decided through the following hierarchy:\n   Moralitos: Deplete your opponent's life points.\n   Arbolitos: If turns end, the player with more arbolitos wins.\n   Remaining Life: As a final tiebreaker, the player with higher moralitos prevails.\nGet ready to strategize, adapt, and outwit your opponent. Let the game begin!" << endl;
+
     while (!deck.isEmpty() && player1.moralitos > 0 && player2.moralitos > 0) {
-        if (i%2!=0) {
-            cout << endl << "--- Turn number " << i << " | Turn of " << player1.name << " ---" << endl;
-        }
-        else if (i%2==0) {
-            cout << endl << "--- Turn number " << i << " | Turn of " << player2.name << " ---" << endl;
-        }
-        
+        cout << endl << "--- Turn number " << turn << " | Turn of " << currentPlayer->name << " ---" << endl;
         displayPlayers(player1, player2);
-    
+
         Card* card = deck.drawCard();
         if (card) {
             card->display();
-    
-            // Lanzar el dado y usar el efecto de la carta
+
             int diceRoll = rollDice();
             bool wildcardUsed = false;
-    
-            // Aplicar efecto
-            card->applyEffect(opponent->moralitos, currentPlayer->arbolitos, diceRoll, wildcardUsed);
-    
-            // Mostrar estado actualizado después de aplicar el efecto
+
+            // Apply card effect
+            card->applyEffect(currentPlayer->moralitos, opponent->moralitos, currentPlayer->arbolitos, diceRoll, wildcardUsed);
+
             displayPlayers(player1, player2);
-    
-            // Eliminar la carta después de usarla
             delete card;
         }
-    
-        // Cambiar de jugador
+
         swap(currentPlayer, opponent);
-    
-        // Incrementar el contador de turnos
-        i++;
-        
+        turn++;
+
         char ready;
         cout << "Are you ready for the next turn? Write anything and press enter to continue" << endl;
         cin >> ready;
     }
-    
-    // Determinar el ganador
+
+    // Determine winner
     cout << "\n--- Game Over ---" << endl;
     if (player1.moralitos <= 0) {
-        cout << player2.name << " wins by depleting Taylor Swift's moralitos!" << endl;
+        cout << player2.name << " wins by depleting " << player1.name << "'s moralitos!" << endl;
     } else if (player2.moralitos <= 0) {
-        cout << player1.name << " wins by depleting Amancio Ortega's moralitos!" << endl;
+        cout << player1.name << " wins by depleting " << player2.name << "'s moralitos!" << endl;
     } else {
         cout << "Deck exhausted! Deciding winner by arbolitos or remaining moralitos..." << endl;
         if (player1.arbolitos > player2.arbolitos) {
@@ -324,5 +309,7 @@ int main() {
             cout << "It's a tie!" << endl;
         }
     }
+
     return 0;
 }
+
