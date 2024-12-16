@@ -122,12 +122,16 @@ public:
 
     void display() const override {
         Card::display();
-        cout << "Effect on moralitos: " << effect << endl;
+        cout << "Effect on moralitos: ";
+        if (effect >= 0) cout << "+";
+        cout << effect << endl;
     }
 
     void applyEffect(int& currentMoralitos, int& opponentMoralitos, int& arbolitos, int& diceRoll, bool& wildcardUsed) const override {
         currentMoralitos += effect;
-        cout << "Event effect applied! Moralitos change: " << effect << endl;
+        cout << "Event effect applied! Moralitos change: ";
+        if (effect >= 0) cout << "+";
+        cout << effect << endl;
     }
 };
 
