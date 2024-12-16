@@ -87,7 +87,7 @@ public:
                      else if (useArbolito == 'N' || useArbolito == 'n') {
                          if (diceRoll >= healThreshold) {
                              currentMoralitos -= healThreshold;
-                             cout << "Healing successful! Dice roll: " << diceRoll << endl << " -" << healThreshold << " moralitos to opponent." << endl;
+                             cout << "Healing successful! Dice roll: " << diceRoll << endl << " +" << healThreshold << " moralitos to self." << endl;
                          }
                          else {
                              cout << "Healing failed! Dice roll: " << diceRoll << endl;
@@ -97,7 +97,7 @@ public:
                  else {
                      if (diceRoll >= healThreshold) {
                          currentMoralitos -= healThreshold;
-                         cout << "Healing successful! Dice roll: " << diceRoll << endl << " -" << healThreshold << " moralitos to opponent." << endl;
+                         cout << "Healing successful! Dice roll: " << diceRoll << endl << " +" << healThreshold << " moralitos to self." << endl;
                      }
                      else {
                          cout << "Healing failed! Dice roll: " << diceRoll << endl;
