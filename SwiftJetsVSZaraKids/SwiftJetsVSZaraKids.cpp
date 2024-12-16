@@ -269,9 +269,20 @@ int main() {
     cout << " |_____/ \\_/\\_/ |_|_|  \\__\\____/ \\___|\\__|___/     \\/  |_____/  /_____\\__,_|_|  \\__,_|_|\\_\\_|\\__,_|___/\n";
     cout << "                                                                                                       \n";
     cout << "                                                                                                       \n";
-    
-    cout << "This turn-based game pits two players against each other in a strategic battle to deplete their \nopponent's 'moralitos' (life points) and claim victory. You start with 30 moralitos. The game ends\nwhen one player's moralitos reach zero or all 40 cards are drawn.\nEach turn, players draw one of three card types :\n   Attack / Healing(25 cards): Damage your opponent or restore your own moralitos. In order to apply this effect,\n     you must roll the dice and the number has to be higher than the amount of moralitos you heal/attack\n   Events (10 cards): Trigger random scenarios with varying effects that heals or damages you.\n   Arbolitos(5 cards): Rare and versatile, this card can funtion as a secure for the dice roll (before its roll).\nThis card can also help you winning the game.\nVictory is decided through the following hierarchy:\n   Moralitos: Deplete your opponent's life points.\n   Arbolitos: If turns end, the player with more arbolitos wins.\n   Remaining Life: As a final tiebreaker, the player with higher moralitos prevails.\nGet ready to strategize, adapt, and outwit your opponent. Let the game begin!" << endl;
 
+    cout << "This turn-based game pits two players against each other in a strategic battle to deplete their opponent's " << endl;
+    cout << "'moralitos' (life points) and claim victory. You start with 20 moralitos. The game ends when one player's" << endl;
+    cout << "moralitos reach zero or all 40 cards are drawn.\nEach turn, players draw one of three card types :" << endl;
+    cout << "   - Attack / Healing(25 cards) : Damage your opponent or restore your own moralitos.In order to apply this" << endl;
+    cout << "       effect, you must roll the dice and the number has to be higher than the amount of moralitos you heal / attack" << endl;
+    cout << "   - Events(10 cards) : Trigger random scenarios with varying effects that heals or damages you." << endl;
+    cout << "   - Arbolitos(5 cards) : Rare and versatile, this card can funtion as a secure for the dice roll(before its roll)." << endl;
+    cout << "This card can also help you winning the game." << endl;
+    cout << "Victory is decided through the following hierarchy:" << endl;
+    cout << "   Moralitos: Deplete your opponent's life points." << endl;
+    cout << "   Arbolitos: If turns end, the player with more arbolitos wins." << endl;
+    cout << "   Remaining Life : As a final tiebreaker, the player with higher moralitos prevails." << endl;
+    cout << "Get ready to strategize, adapt, and outwit your opponent.Let the game begin!" << endl;
     while (!deck.isEmpty() && player1.moralitos > 0 && player2.moralitos > 0) {
         cout << endl << "--- Turn number " << turn << " | Turn of " << currentPlayer->name << " ---" << endl;
         displayPlayers(player1, player2);
