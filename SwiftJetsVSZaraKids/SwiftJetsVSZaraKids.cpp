@@ -52,7 +52,7 @@ public:
                      cin >> useArbolito;
                      if (useArbolito == 'Y' || useArbolito == 'y') {
                          arbolitos--;
-                         opponentMoralitos += attackThreshold;
+                         opponentMoralitos -= attackThreshold;
                          cout << "Healing successful using an arbolito! Remaining arbolitos: " << arbolitos << endl;
                      }
                      else if (useArbolito == 'N' || useArbolito == 'n') {
@@ -86,7 +86,7 @@ public:
                      }
                      else if (useArbolito == 'N' || useArbolito == 'n') {
                          if (diceRoll >= healThreshold) {
-                             currentMoralitos -= healThreshold;
+                             currentMoralitos += healThreshold;
                              cout << "Healing successful! Dice roll: " << diceRoll << endl << " +" << healThreshold << " moralitos to self." << endl;
                          }
                          else {
@@ -96,7 +96,7 @@ public:
                  }
                  else {
                      if (diceRoll >= healThreshold) {
-                         currentMoralitos -= healThreshold;
+                         currentMoralitos += healThreshold;
                          cout << "Healing successful! Dice roll: " << diceRoll << endl << " +" << healThreshold << " moralitos to self." << endl;
                      }
                      else {
